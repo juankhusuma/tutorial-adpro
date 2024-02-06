@@ -17,7 +17,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-public class HomePageFunctionalTest {
+public class CreateProductFunctionalTest {
     @LocalServerPort
     private int serverPort;
 
@@ -32,16 +32,23 @@ public class HomePageFunctionalTest {
     }
 
     @Test
-    void pageTitle_isCorrect(ChromeDriver driver) throws Exception {
-        driver.get(baseUrl + "/");
+    void createForm_isDisplayed(ChromeDriver driver) throws Exception {
+        driver.get(baseUrl + "/product/create");
         String pageTitle = driver.getTitle();
-        assertEquals("ADV Shop", pageTitle);
+        assertEquals("Create New Product", pageTitle);
     }
 
     @Test
-    void welcomeMessage_homePage_isCorrect(ChromeDriver driver) throws Exception {
-        driver.get(baseUrl + "/");
-        String welcomeMessage = driver.findElement(By.tagName("h3")).getText();
-        assertEquals("Welcome", welcomeMessage);
+    void createProduct_isSuccessful(ChromeDriver driver) throws Exception {
+        String productName = "Sampo Cap Bambang";
+        driver.get(baseUrl + "/product/create");
+        driver.findElement(By.id("nameInput")).sendKeys(productName);
+        driver.findElement(By.id("quantityInput")).sendKeys("100");
+        driver.findElement(By.tagName("button")).click();
+
+        Thread.sleep(3000);
+        // select the first row of the table and get the first cell
+        String itemName = driver.findElement(By.cssSelector("table tbody tr:first-child td:first-child")).getText();
+        assertEquals(productName, itemName);
     }
 }
