@@ -57,6 +57,6 @@ tasks.register<Test>("functionalTest") {
 	}
 }
 
-tasks.withType<Test>().cofigureEach {
+tasks.withType<Test> {
 	useJUnitPlatform()
 }
