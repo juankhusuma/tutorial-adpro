@@ -13,7 +13,7 @@ import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepository productRepository = new ProductRepository();
 
     @Override
     public Product create(Product product) {
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(String productId) {
-        productRepository.delete(productId);
+    public Product delete(String productId) {
+        return productRepository.delete(productId);
     }
 }

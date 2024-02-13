@@ -13,5 +13,5 @@ public interface ProductService {
 
     public Product findById(String productId);
 
-    public void delete(String productId);
+    public Product delete(String productId);
 }

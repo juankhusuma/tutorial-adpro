@@ -8,7 +8,11 @@ import id.ac.ui.cs.advprog.eshop.model.Product;
 
 @Repository
 public class ProductRepository {
-    private List<Product> productData = new ArrayList<>();
+    private List<Product> productData;
+
+    public ProductRepository() {
+        productData = new ArrayList<>();
+    }
 
     public Product create(Product product) {
         String productId = productData.size() + 1 + "";
@@ -41,8 +45,9 @@ public class ProductRepository {
         return null;
     }
 
-    public void delete(String productId) {
+    public Product delete(String productId) {
         Product productToDelete = findById(productId);
         productData.remove(productToDelete);
+        return productToDelete;
     }
 }
