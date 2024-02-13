@@ -21,120 +21,105 @@ import id.ac.ui.cs.advprog.eshop.service.ProductService;
 @WebMvcTest(ProductController.class)
 public class ProductControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private ProductService service;
+        @MockBean
+        private ProductService service;
 
-    @Autowired
-    private JacksonTester<Product> jsonProduct;
+        @Autowired
+        private JacksonTester<Product> jsonProduct;
 
-    @Test
-    public void canGetCreateProductPage() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                get("/product/create"))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_OK);
-    }
+        @Test
+        public void canGetCreateProductPage() throws Exception {
+                MockHttpServletResponse response = mockMvc.perform(
+                                get("/product/create"))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_OK);
+        }
 
-    @Test
-    public void canCreateProduct() throws Exception {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Product 1");
-        product.setProductQuantity(10);
-        String json = jsonProduct.write(product).getJson();
-        MockHttpServletResponse response = mockMvc.perform(
-                post("/product/create")
-                        .contentType("application/json")
-                        .content(json != null ? json : ""))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
-    }
+        @Test
+        public void canCreateProduct() throws Exception {
+                Product product = new Product("Product 1", 10);
+                String json = jsonProduct.write(product).getJson();
+                MockHttpServletResponse response = mockMvc.perform(
+                                post("/product/create")
+                                                .contentType("application/json")
+                                                .content(json != null ? json : ""))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
+        }
 
-    @Test
-    public void canGetProductListPage() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                get("/product/list"))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_OK);
-    }
+        @Test
+        public void canGetProductListPage() throws Exception {
+                MockHttpServletResponse response = mockMvc.perform(
+                                get("/product/list"))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_OK);
+        }
 
-    @Test
-    public void canGetEditProductPage() throws Exception {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Product 1");
-        product.setProductQuantity(10);
+        @Test
+        public void canGetEditProductPage() throws Exception {
+                Product product = new Product("Product 1", 10);
+                String json = jsonProduct.write(product).getJson();
+                mockMvc.perform(
+                                post("/product/create")
+                                                .contentType("application/json")
+                                                .content(json != null ? json : ""))
+                                .andReturn().getResponse();
 
-        String json = jsonProduct.write(product).getJson();
-        mockMvc.perform(
-                post("/product/create")
-                        .contentType("application/json")
-                        .content(json != null ? json : ""))
-                .andReturn().getResponse();
+                Mockito.when(service.findById("1")).thenReturn(product);
 
-        Mockito.when(service.findById("1")).thenReturn(product);
+                MockHttpServletResponse response = mockMvc.perform(
+                                get("/product/edit/1"))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_OK);
 
-        MockHttpServletResponse response = mockMvc.perform(
-                get("/product/edit/1"))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_OK);
-    }
+        }
 
-    @Test
-    public void canEditProduct() throws Exception {
-        Product existingProduct = new Product();
-        existingProduct.setProductId("1");
-        existingProduct.setProductName("Product 1");
-        existingProduct.setProductQuantity(10);
-        String jsonExistingProduct = jsonProduct.write(existingProduct).getJson();
-        mockMvc.perform(
-                post("/product/create")
-                        .contentType("application/json")
-                        .content(jsonExistingProduct != null ? jsonExistingProduct : ""))
-                .andReturn().getResponse();
+        @Test
+        public void canEditProduct() throws Exception {
+                Product existingProduct = new Product("Product 1", 10);
+                String jsonExistingProduct = jsonProduct.write(existingProduct).getJson();
+                mockMvc.perform(
+                                post("/product/create")
+                                                .contentType("application/json")
+                                                .content(jsonExistingProduct != null ? jsonExistingProduct : ""))
+                                .andReturn().getResponse();
 
-        Product updatedProduct = new Product();
-        updatedProduct.setProductId("1");
-        updatedProduct.setProductName("Product 1");
-        updatedProduct.setProductQuantity(20);
+                Product updatedProduct = new Product("Product 1", 20);
 
-        String json = jsonProduct.write(updatedProduct).getJson();
-        MockHttpServletResponse response = mockMvc.perform(
-                post("/product/edit/1")
-                        .contentType("application/json")
-                        .content(json != null ? json : ""))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
-    }
+                String json = jsonProduct.write(updatedProduct).getJson();
+                MockHttpServletResponse response = mockMvc.perform(
+                                post("/product/edit/1")
+                                                .contentType("application/json")
+                                                .content(json != null ? json : ""))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
+        }
 
-    @Test
-    public void canRedirectWhenEditNotFound() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                get("/product/edit/69"))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
-    }
+        @Test
+        public void canRedirectWhenEditNotFound() throws Exception {
+                MockHttpServletResponse response = mockMvc.perform(
+                                get("/product/edit/69"))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
+        }
 
-    @Test
-    public void canDeleteProduct() throws Exception {
-        Product product = new Product();
-        product.setProductId("1");
-        product.setProductName("Product 1");
-        product.setProductQuantity(10);
-        String json = jsonProduct.write(product).getJson();
+        @Test
+        public void canDeleteProduct() throws Exception {
+                Product product = new Product("Product 1", 10);
+                String json = jsonProduct.write(product).getJson();
 
-        mockMvc.perform(
-                post("/product/create")
-                        .contentType("application/json")
-                        .content(json != null ? json : ""))
-                .andReturn().getResponse();
+                mockMvc.perform(
+                                post("/product/create")
+                                                .contentType("application/json")
+                                                .content(json != null ? json : ""))
+                                .andReturn().getResponse();
 
-        MockHttpServletResponse response = mockMvc.perform(
-                get("/product/delete/1"))
-                .andReturn().getResponse();
-        assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
-    }
+                MockHttpServletResponse response = mockMvc.perform(
+                                get("/product/delete/1"))
+                                .andReturn().getResponse();
+                assert (response.getStatus() == HttpStatus.SC_MOVED_TEMPORARILY);
+        }
 }

@@ -22,7 +22,7 @@ public class ProductController {
 
     @GetMapping("/create")
     public String createProductPage(Model model) {
-        Product product = new Product();
+        Product product = new Product("", 0);
         model.addAttribute("product", product);
         return "createProduct";
     }
