@@ -3,12 +3,21 @@ plugins {
 	jacoco
 	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.4"
+	id("org.sonarqube") version "4.4.1.3373"
 }
 
 val seleniumJavaVersion = "4.14.1"
 val seleniumJupiterVersion = "5.0.1"
 val webdrivermanagerVersion = "5.6.3"
 val junitJupiterVersion = "5.9.1"
+
+sonar {
+  properties {
+    property("sonar.projectKey", "juankhusuma_adpro")
+    property("sonar.organization", "juankhusuma")
+    property("sonar.host.url", "https://sonarcloud.io")
+  }
+}
 
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
