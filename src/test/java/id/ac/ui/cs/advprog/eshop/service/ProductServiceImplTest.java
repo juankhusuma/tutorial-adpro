@@ -57,6 +57,7 @@ public class ProductServiceImplTest {
     void testEditChangesProductInRepository() {
         productService.create(product);
         Product newProductData = new Product("Sampo Cap Bambang", 200);
+        productService.edit("1", newProductData);
         Product productFromRepository = productService.findAll().get(0);
         assertEquals(newProductData.getProductName(), productFromRepository.getProductName());
         assertEquals(newProductData.getProductQuantity(), productFromRepository.getProductQuantity());
