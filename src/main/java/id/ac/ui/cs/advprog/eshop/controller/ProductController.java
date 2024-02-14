@@ -17,6 +17,8 @@ import id.ac.ui.cs.advprog.eshop.service.ProductService;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+    private final String PRODUCT_LIST_REDIRECT = "redirect:/product/list";
+
     @Autowired
     private ProductService service;
 
@@ -30,7 +32,7 @@ public class ProductController {
     @PostMapping("/create")
     public String createProduct(@ModelAttribute Product product, Model model) {
         service.create(product);
-        return "redirect:list";
+        return PRODUCT_LIST_REDIRECT;
     }
 
     @GetMapping("/list")
@@ -44,7 +46,7 @@ public class ProductController {
     public String editProductPage(@PathVariable("productId") String productId, Model model) {
         Product product = service.findById(productId);
         if (product == null) {
-            return "redirect:/product/list";
+            return PRODUCT_LIST_REDIRECT;
         }
         model.addAttribute("product", product);
         return "editProduct";
@@ -54,12 +56,12 @@ public class ProductController {
     public String editProduct(@PathVariable("productId") String productId, @ModelAttribute Product product,
             Model model) {
         service.edit(product.getProductId(), product);
-        return "redirect:/product/list";
+        return PRODUCT_LIST_REDIRECT;
     }
 
     @GetMapping("/delete/{productId}")
     public String deleteProduct(@PathVariable("productId") String productId, Model model) {
         service.delete(productId);
-        return "redirect:/product/list";
+        return PRODUCT_LIST_REDIRECT;
     }
 }
