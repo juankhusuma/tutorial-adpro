@@ -7,6 +7,14 @@ import lombok.Setter;
 @Setter
 public class Product {
     public static int productCount = 0;
+    private String productId;
+    private String productName;
+    private int productQuantity;
+
+    public Product() {
+        productCount++;
+        this.productId = "" + productCount;
+    }
 
     public Product(String productName, int productQuantity) {
         productCount++;
@@ -15,7 +23,4 @@ public class Product {
         this.productQuantity = productQuantity;
     }
 
-    private String productId;
-    private String productName;
-    private int productQuantity;
 }
