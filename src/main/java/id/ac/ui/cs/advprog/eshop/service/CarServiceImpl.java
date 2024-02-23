@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<Car> findAll() {
         Iterator<Car> carIterator = carRepository.findAll();
-        List<Car> carList = List.of(carIterator.next());
-        return carList;
+        List<Car> allCars = new ArrayList<>();
+        carIterator.forEachRemaining(allCars::add);
+        return allCars;
     }
 
     @Override
