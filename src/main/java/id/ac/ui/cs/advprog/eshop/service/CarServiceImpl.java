@@ -12,8 +12,11 @@ import id.ac.ui.cs.advprog.eshop.repository.CarRepository;
 
 @Service
 public class CarServiceImpl implements CarService {
-    @Autowired
     private CarRepository carRepository;
+
+    public CarServiceImpl() {
+        carRepository = new CarRepository();
+    }
 
     @Override
     public Car create(Car car) {

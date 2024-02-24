@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import org.apache.hc.core5.http.HttpStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class ProductControllerTest {
         @Autowired
         private JacksonTester<Product> jsonProduct;
 
+        Product product;
+
+        @BeforeEach
+        void setUp() {
+                this.product = new Product();
+                this.product.setProductId("1");
+                this.product.setProductName("Sampo Cap Bambang");
+                this.product.setProductQuantity(100);
+        }
+
         @Test
         public void canGetCreateProductPage() throws Exception {
                 MockHttpServletResponse response = mockMvc.perform(
@@ -42,7 +53,6 @@ public class ProductControllerTest {
 
         @Test
         public void canCreateProduct() throws Exception {
-                Product product = new Product("Product 1", 10);
                 String json = jsonProduct.write(product).getJson();
                 MockHttpServletResponse response = mockMvc.perform(
                                 post("/product/create")
@@ -62,7 +72,6 @@ public class ProductControllerTest {
 
         @Test
         public void canGetEditProductPage() throws Exception {
-                Product product = new Product("Product 1", 10);
                 String json = jsonProduct.write(product).getJson();
                 mockMvc.perform(
                                 post("/product/create")
@@ -81,15 +90,17 @@ public class ProductControllerTest {
 
         @Test
         public void canEditProduct() throws Exception {
-                Product existingProduct = new Product("Product 1", 10);
-                String jsonExistingProduct = jsonProduct.write(existingProduct).getJson();
+                String jsonExistingProduct = jsonProduct.write(product).getJson();
                 mockMvc.perform(
                                 post("/product/create")
                                                 .contentType("application/json")
                                                 .content(jsonExistingProduct != null ? jsonExistingProduct : ""))
                                 .andReturn().getResponse();
 
-                Product updatedProduct = new Product("Product 1", 20);
+                Product updatedProduct = new Product();
+                updatedProduct.setProductId("1");
+                updatedProduct.setProductName("Sampo Cap Usep");
+                updatedProduct.setProductQuantity(50);
 
                 String json = jsonProduct.write(updatedProduct).getJson();
                 MockHttpServletResponse response = mockMvc.perform(
@@ -110,7 +121,6 @@ public class ProductControllerTest {
 
         @Test
         public void canDeleteProduct() throws Exception {
-                Product product = new Product("Product 1", 10);
                 String json = jsonProduct.write(product).getJson();
 
                 mockMvc.perform(
