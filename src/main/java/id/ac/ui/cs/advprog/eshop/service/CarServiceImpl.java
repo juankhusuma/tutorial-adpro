@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 
 import id.ac.ui.cs.advprog.eshop.model.Car;
 import id.ac.ui.cs.advprog.eshop.repository.CarRepository;
+import id.ac.ui.cs.advprog.eshop.repository.IRepository;
 
 @Service
 public class CarServiceImpl implements CarService {
-    private CarRepository carRepository;
+    private IRepository<Car> carRepository;
 
     public CarServiceImpl() {
         carRepository = new CarRepository();
