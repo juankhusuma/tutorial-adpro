@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import id.ac.ui.cs.advprog.eshop.model.Car;
 
 @Repository
-public class CarRepository {
+public class CarRepository implements IRepository<Car> {
     static int id = 0;
     private List<Car> carData = new ArrayList<>();
 
@@ -46,7 +46,9 @@ public class CarRepository {
         return null;
     }
 
-    public void delete(String carId) {
+    public Car delete(String carId) {
+        Car carToDelete = findById(carId);
         carData.removeIf(car -> car.getCarId().equals(carId));
+        return carToDelete;
     }
 }

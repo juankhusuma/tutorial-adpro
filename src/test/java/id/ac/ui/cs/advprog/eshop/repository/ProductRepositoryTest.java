@@ -19,14 +19,19 @@ public class ProductRepositoryTest {
     @InjectMocks
     ProductRepository productRepository;
 
+    Product product;
+
     @BeforeEach
     void setUp() {
         this.productRepository = new ProductRepository();
+        this.product = new Product();
+        this.product.setProductId("1");
+        this.product.setProductName("Sampo Cap Bambang");
+        this.product.setProductQuantity(100);
     }
 
     @Test
     void testCreateAndFind() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
         Iterator<Product> productIterator = productRepository.findAll();
@@ -45,16 +50,18 @@ public class ProductRepositoryTest {
 
     @Test
     void testFindAllIfMoreThanOneProduct() {
-        Product product1 = new Product("Sampo Cap Bambang", 100);
-        productRepository.create(product1);
+        productRepository.create(product);
 
-        Product product2 = new Product("Sampo Cap Usep", 50);
+        Product product2 = new Product();
+        product2.setProductId("2");
+        product2.setProductName("Sampo Cap Usep");
+        product2.setProductQuantity(50);
         productRepository.create(product2);
 
         Iterator<Product> productIterator = productRepository.findAll();
         assertTrue(productIterator.hasNext());
         Product savedProduct = productIterator.next();
-        assertEquals(product1.getProductId(), savedProduct.getProductId());
+        assertEquals(product.getProductId(), savedProduct.getProductId());
         savedProduct = productIterator.next();
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
@@ -62,11 +69,12 @@ public class ProductRepositoryTest {
 
     @Test
     void testEditIfProductExist() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
-        Product newProductData = new Product("Sampo Cap Usep", 50);
-        productRepository.edit(product.getProductId(), newProductData);
+        Product newProductData = new Product();
+        newProductData.setProductName("Sampo Cap Usep");
+        newProductData.setProductQuantity(50);
+        productRepository.update(product.getProductId(), newProductData);
 
         Iterator<Product> productIterator = productRepository.findAll();
         assertTrue(productIterator.hasNext());
@@ -77,11 +85,12 @@ public class ProductRepositoryTest {
 
     @Test
     void testEditIfProductNotFound() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
-        Product newProductData = new Product("Sampo Cap Usep", 50);
-        productRepository.edit("abc", newProductData);
+        Product newProductData = new Product();
+        newProductData.setProductName("Sampo Cap Usep");
+        newProductData.setProductQuantity(50);
+        productRepository.update("abc", newProductData);
 
         Iterator<Product> productIterator = productRepository.findAll();
         Product savedProduct = productIterator.next();
@@ -91,8 +100,10 @@ public class ProductRepositoryTest {
 
     @Test
     void testEditIfProductNotExist() {
-        Product newProductData = new Product("Sampo Cap Usep", 50);
-        productRepository.edit(newProductData.getProductId(), newProductData);
+        Product newProductData = new Product();
+        newProductData.setProductId("1");
+        newProductData.setProductName("Sampo Cap Usep");
+        productRepository.update(newProductData.getProductId(), newProductData);
 
         Iterator<Product> productIterator = productRepository.findAll();
         assertFalse(productIterator.hasNext());
@@ -100,7 +111,6 @@ public class ProductRepositoryTest {
 
     @Test
     void testFindByIdIfProductExist() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
         Product savedProduct = productRepository.findById(product.getProductId());
@@ -117,7 +127,6 @@ public class ProductRepositoryTest {
 
     @Test
     void testDeleteIfProductExist() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
         productRepository.delete(product.getProductId());
@@ -128,13 +137,15 @@ public class ProductRepositoryTest {
 
     @Test
     void testDeleteOnMultipleProducts() {
-        Product product1 = new Product("Sampo Cap Bambang", 100);
-        productRepository.create(product1);
+        productRepository.create(product);
 
-        Product product2 = new Product("Sampo Cap Usep", 50);
+        Product product2 = new Product();
+        product2.setProductId("2");
+        product2.setProductName("Sampo Cap Usep");
+        product2.setProductQuantity(50);
         productRepository.create(product2);
 
-        productRepository.delete(product1.getProductId());
+        productRepository.delete(product.getProductId());
 
         Iterator<Product> productIterator = productRepository.findAll();
         assertTrue(productIterator.hasNext());
@@ -153,7 +164,6 @@ public class ProductRepositoryTest {
 
     @Test
     void testDeleteIfProductNotFound() {
-        Product product = new Product("Sampo Cap Bambang", 100);
         productRepository.create(product);
 
         productRepository.delete("abc");

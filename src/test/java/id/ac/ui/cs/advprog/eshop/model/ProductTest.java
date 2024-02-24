@@ -10,7 +10,10 @@ public class ProductTest {
 
     @BeforeEach
     void setUp() {
-        this.product = new Product("Sampo Cap Bambang", 100);
+        this.product = new Product();
+        this.product.setProductId("1");
+        this.product.setProductName("Sampo Cap Bambang");
+        this.product.setProductQuantity(100);
     }
 
     @Test

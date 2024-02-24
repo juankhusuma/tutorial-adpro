@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 
 @Repository
-public class ProductRepository {
+public class ProductRepository implements IRepository<Product> {
     private List<Product> productData;
 
     public ProductRepository() {
@@ -21,7 +21,7 @@ public class ProductRepository {
         return product;
     }
 
-    public Product edit(String productId, Product newProductData) {
+    public Product update(String productId, Product newProductData) {
         Product productToEdit = findById(productId);
 
         if (productToEdit != null) {

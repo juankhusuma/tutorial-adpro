@@ -23,7 +23,10 @@ public class ProductServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        this.product = new Product("Sampo Cap Bambang", 100);
+        this.product = new Product();
+        this.product.setProductId("1");
+        this.product.setProductName("Sampo Cap Bambang");
+        this.product.setProductQuantity(100);
     }
 
     @Test
@@ -40,7 +43,10 @@ public class ProductServiceImplTest {
     @Test
     void testFindAllReturnsProperly() {
         productService.create(product);
-        Product product2 = new Product("Sampo Cap Budi", 100);
+        Product product2 = new Product();
+        product2.setProductId("2");
+        product2.setProductName("Sampo Cap Usep");
+        product2.setProductQuantity(50);
         productService.create(product2);
         assertEquals(product, productService.findAll().get(0));
         assertEquals(product2, productService.findAll().get(1));
@@ -49,14 +55,20 @@ public class ProductServiceImplTest {
     @Test
     void testEditReturnsProperly() {
         productService.create(product);
-        Product newProductData = new Product("Sampo Cap Bambang", 200);
-        assertEquals(newProductData, productService.edit("eb558e9f-1c39-460e-8860-71af6af63bd6", newProductData));
+        Product newProductData = new Product();
+        newProductData.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        newProductData.setProductName("Sampo Cap Bambang");
+        newProductData.setProductQuantity(200);
+        assertEquals(newProductData, productService.edit("1", newProductData));
     }
 
     @Test
     void testEditChangesProductInRepository() {
         productService.create(product);
-        Product newProductData = new Product("Sampo Cap Bambang", 200);
+        Product newProductData = new Product();
+        newProductData.setProductId("2");
+        newProductData.setProductName("Sampo Cap Bambang");
+        newProductData.setProductQuantity(200);
         productService.edit("1", newProductData);
         Product productFromRepository = productService.findAll().get(0);
         assertEquals(newProductData.getProductName(), productFromRepository.getProductName());

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -12,8 +11,12 @@ import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    private ProductRepository productRepository = new ProductRepository();
+
+    private ProductRepository productRepository;
+
+    public ProductServiceImpl() {
+        productRepository = new ProductRepository();
+    }
 
     @Override
     public Product create(Product product) {
@@ -31,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product edit(String productId, Product newProductData) {
-        productRepository.edit(productId, newProductData);
+        productRepository.update(productId, newProductData);
         return newProductData;
     }
 
