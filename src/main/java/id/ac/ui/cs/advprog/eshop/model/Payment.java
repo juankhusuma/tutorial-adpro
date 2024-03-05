@@ -14,7 +14,8 @@ public class Payment {
     private Map<String, String> paymentData;
     private Order order;
 
-    public Payment(String id, String method, Map<String, String> paymentData, Order order) {
+    public Payment(String id, String method, Map<String, String> paymentData, Order order)
+            throws IllegalArgumentException {
         this.id = id;
         this.paymentData = paymentData;
         this.setMethod(method);
@@ -27,7 +28,7 @@ public class Payment {
         }
     }
 
-    public void setMethod(String method) {
+    public void setMethod(String method) throws IllegalArgumentException {
         if (PaymentMethod.contains(method)) {
             this.method = method;
         } else {
@@ -35,7 +36,7 @@ public class Payment {
         }
     }
 
-    public void setStatus(String status) {
+    public void setStatus(String status) throws IllegalArgumentException {
         if (PaymentStatus.contains(status)) {
             this.status = status;
         } else {
@@ -43,11 +44,13 @@ public class Payment {
         }
     }
 
-    public void setPaymentData(Map<String, String> paymentData) {
+    public void setPaymentData(Map<String, String> paymentData) throws IllegalArgumentException {
         if (paymentData == null) {
             throw new IllegalArgumentException();
-        } else if (this.method.equals(PaymentMethod.COD.getValue())) {
-            if (paymentData.get("voucherCode").length() != 16) {
+        } else if (this.method.equals(PaymentMethod.VOUCHER.getValue())) {
+            if (paymentData.get("voucherCode") == null) {
+                throw new IllegalArgumentException();
+            } else if (paymentData.get("voucherCode").length() != 16) {
                 throw new IllegalArgumentException();
             } else if (!paymentData.get("voucherCode").startsWith("ESHOP")) {
                 throw new IllegalArgumentException();
