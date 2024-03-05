@@ -108,7 +108,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentWithoutOrder() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(null, "VOUCHER", this.voucherPaymentData, this.order);
+            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER", this.voucherPaymentData, null);
         });
     }
 
