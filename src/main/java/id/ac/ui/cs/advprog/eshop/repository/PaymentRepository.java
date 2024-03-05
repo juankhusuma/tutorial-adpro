@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import enums.OrderStatus;
 import enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
@@ -14,7 +15,8 @@ public class PaymentRepository {
 
     public Payment addPayment(
             Order order, String method, Map<String, String> paymentData) throws IllegalArgumentException {
-        Payment payment = new Payment(UUID.randomUUID().toString(), method, paymentData, order);
+        String uuid = UUID.randomUUID().toString();
+        Payment payment = new Payment(uuid, method, paymentData, order);
         this.paymentData.add(payment);
         return payment;
     }
@@ -24,8 +26,13 @@ public class PaymentRepository {
             throw new IllegalArgumentException();
         }
         payment.setStatus(status);
-        payment.getOrder().setStatus(
-                status.equals("SUCCESS") ? "SUCCESS" : "FAILED");
+        if (status.equals(PaymentStatus.SUCCESS.getValue())) {
+            payment.getOrder().setStatus(
+                    OrderStatus.SUCCESS.getValue());
+        } else {
+            payment.getOrder().setStatus(
+                    OrderStatus.FAILED.getValue());
+        }
         return payment;
     }
 
