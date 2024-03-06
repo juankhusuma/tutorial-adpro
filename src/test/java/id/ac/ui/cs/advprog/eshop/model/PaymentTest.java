@@ -12,6 +12,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import enums.PaymentStatus;
+
 public class PaymentTest {
     private Map<String, String> voucherPaymentData;
     private Map<String, String> codPaymentData;
@@ -57,22 +59,19 @@ public class PaymentTest {
         paymentDataWithoutEightNumbers.put("voucherCode", "ESHOP1234ABC");
         paymentDataWithLessThanSixteenCharacters.put("voucherCode", "ESHOP1234ABC567");
         paymentDataWithGreaterThanSixteenCharacters.put("voucherCode", "ESHOP1234ABC56781234");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
-                    paymentDataWithoutESHOPPrefix, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
-                    paymentDataWithoutEightNumbers, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
-                    paymentDataWithLessThanSixteenCharacters, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
-                    paymentDataWithGreaterThanSixteenCharacters, this.order);
-        });
+        Payment paymentWithoutESHOPPrefix = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
+                paymentDataWithoutESHOPPrefix, this.order);
+        Payment paymentWithoutEightNumbers = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
+                paymentDataWithoutEightNumbers, this.order);
+        Payment paymentWithLessThanSixteenCharacters = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
+                paymentDataWithLessThanSixteenCharacters, this.order);
+        Payment paymentWithGreaterThanSixteenCharacters = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "VOUCHER",
+                paymentDataWithGreaterThanSixteenCharacters, this.order);
+
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutESHOPPrefix.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutEightNumbers.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithLessThanSixteenCharacters.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithGreaterThanSixteenCharacters.getStatus());
     }
 
     @Test
@@ -87,22 +86,19 @@ public class PaymentTest {
         paymentDataWithEmptyAddress.put("deliveryFee", "12000");
         paymentDataWithEmptyDeliveryFee.put("deliveryFee", "");
         paymentDataWithEmptyDeliveryFee.put("address", "Jl. Walet Indah 3, No. 10");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
-                    paymentDataWithoutAddress, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
-                    paymentDataWithoutDeliveryFee, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
-                    paymentDataWithEmptyAddress, this.order);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
-                    paymentDataWithEmptyDeliveryFee, this.order);
-        });
+        Payment paymentWithoutAddress = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
+                paymentDataWithoutAddress, this.order);
+        Payment paymentWithoutDeliveryFee = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
+                paymentDataWithoutDeliveryFee, this.order);
+        Payment paymentWithEmptyAddress = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
+                paymentDataWithEmptyAddress, this.order);
+        Payment paymentWithEmptyDeliveryFee = new Payment("13652556-012a-4c07-b546-54eb1396d79b", "COD",
+                paymentDataWithEmptyDeliveryFee, this.order);
+
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutAddress.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutDeliveryFee.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithEmptyAddress.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithEmptyDeliveryFee.getStatus());
     }
 
     @Test

@@ -117,20 +117,31 @@ public class PaymentRepositoryTest {
         paymentDataWithoutEightNumbers.put("voucherCode", "ESHOP1234ABC");
         paymentDataWithLessThanSixteenCharacters.put("voucherCode", "ESHOP1234ABC567");
         paymentDataWithGreaterThanSixteenCharacters.put("voucherCode", "ESHOP1234ABC56781234");
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(), paymentDataWithoutESHOPPrefix);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(), paymentDataWithoutEightNumbers);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
-                    paymentDataWithLessThanSixteenCharacters);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
-                    paymentDataWithGreaterThanSixteenCharacters);
-        });
+        Payment paymentWithoutESHOPPrefix = paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
+                paymentDataWithoutESHOPPrefix);
+        Payment paymentWithoutEightNumbers = paymentRepository.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
+                paymentDataWithoutEightNumbers);
+        Payment paymentWithLessThanSixteenCharacters = paymentRepository.addPayment(order1,
+                PaymentMethod.VOUCHER.getValue(),
+                paymentDataWithLessThanSixteenCharacters);
+        Payment paymentWithGreaterThanSixteenCharacters = paymentRepository.addPayment(order1,
+                PaymentMethod.VOUCHER.getValue(),
+                paymentDataWithGreaterThanSixteenCharacters);
+
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutESHOPPrefix.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutEightNumbers.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithLessThanSixteenCharacters.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithGreaterThanSixteenCharacters.getStatus());
+
+        boolean allRejected = true;
+        for (Payment payment : paymentRepository.getAllPayments()) {
+            if (!payment.getStatus().equals(PaymentStatus.REJECTED.getValue())) {
+                allRejected = false;
+                break;
+            }
+        }
+
+        assertEquals(true, allRejected);
     }
 
     @Test
@@ -145,17 +156,28 @@ public class PaymentRepositoryTest {
         paymentDataWithEmptyAddress.put("deliveryFee", "12000");
         paymentDataWithEmptyDeliveryFee.put("deliveryFee", "");
         paymentDataWithEmptyDeliveryFee.put("address", "Jl. Walet Indah 3, No. 10");
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(), paymentDataWithoutAddress);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(), paymentDataWithoutDeliveryFee);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(), paymentDataWithEmptyAddress);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(), paymentDataWithEmptyDeliveryFee);
-        });
+        Payment paymentWithoutAddress = paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(),
+                paymentDataWithoutAddress);
+        Payment paymentWithoutDeliveryFee = paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(),
+                paymentDataWithoutDeliveryFee);
+        Payment paymentWithEmptyAddress = paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(),
+                paymentDataWithEmptyAddress);
+        Payment paymentWithEmptyDeliveryFee = paymentRepository.addPayment(order1, PaymentMethod.COD.getValue(),
+                paymentDataWithEmptyDeliveryFee);
+
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutAddress.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithoutDeliveryFee.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithEmptyAddress.getStatus());
+        assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithEmptyDeliveryFee.getStatus());
+
+        boolean allRejected = true;
+        for (Payment payment : paymentRepository.getAllPayments()) {
+            if (!payment.getStatus().equals(PaymentStatus.REJECTED.getValue())) {
+                allRejected = false;
+                break;
+            }
+        }
+
+        assertEquals(true, allRejected);
     }
 }
