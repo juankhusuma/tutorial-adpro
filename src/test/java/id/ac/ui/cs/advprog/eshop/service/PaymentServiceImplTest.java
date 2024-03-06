@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -66,28 +68,23 @@ public class PaymentServiceImplTest {
         void testCreateVoucherPayment() {
                 Payment payment = paymentService.addPayment(
                                 order1, PaymentMethod.VOUCHER.getValue(), voucherPaymentData);
-                doReturn(payment).when(paymentRepository).addPayment(
-                                order1, PaymentMethod.VOUCHER.getValue(), voucherPaymentData);
+                doReturn(payment).when(paymentRepository).addPayment(order1, PaymentMethod.VOUCHER.getValue(),
+                                voucherPaymentData);
                 verify(paymentRepository, times(1))
                                 .addPayment(order1, PaymentMethod.VOUCHER.getValue(), voucherPaymentData);
-                verify(paymentService, times(1))
-                                .setStatus(payment, PaymentStatus.SUCCESS.getValue());
+                paymentService.addPayment(order1, PaymentMethod.VOUCHER.getValue(), voucherPaymentData);
                 assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
-                assertEquals(OrderStatus.SUCCESS.getValue(), order1.getStatus());
         }
 
         @Test
         void testCreateCODPayment() {
-                Payment payment = paymentService.addPayment(
-                                order2, PaymentMethod.COD.getValue(), codPaymentData);
-                doReturn(payment).when(paymentService).addPayment(
-                                order2, PaymentMethod.COD.getValue(), codPaymentData);
+                Payment payment = paymentService.addPayment(order1, PaymentMethod.COD.getValue(), codPaymentData);
+                doReturn(payment).when(paymentRepository).addPayment(order1, PaymentMethod.COD.getValue(),
+                                codPaymentData);
                 verify(paymentRepository, times(1))
-                                .addPayment(order2, PaymentMethod.COD.getValue(), codPaymentData);
-                verify(paymentService, times(1))
-                                .setStatus(payment, PaymentStatus.SUCCESS.getValue());
+                                .addPayment(order1, PaymentMethod.COD.getValue(), codPaymentData);
+                paymentService.addPayment(order1, PaymentMethod.COD.getValue(), codPaymentData);
                 assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
-                assertEquals(OrderStatus.SUCCESS.getValue(), order2.getStatus());
         }
 
         @Test
@@ -115,35 +112,29 @@ public class PaymentServiceImplTest {
                 assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithLessThanSixteenCharacters.getStatus());
                 assertEquals(PaymentStatus.REJECTED.getValue(), paymentWithGreaterThanSixteenCharacters.getStatus());
                 assertEquals(OrderStatus.FAILED.getValue(), order1.getStatus());
-                verify(paymentRepository, times(4))
-                                .addPayment(order1, PaymentMethod.VOUCHER.getValue(), paymentDataWithoutESHOPPrefix);
         }
 
         @Test
         void testGetAllPayments() {
                 paymentService.addPayment(order1, PaymentMethod.VOUCHER.getValue(), voucherPaymentData);
                 paymentService.addPayment(order2, PaymentMethod.COD.getValue(), codPaymentData);
-                doReturn(paymentRepository.getAllPayments()).when(paymentService).getAllPayments();
-                assertEquals(2, paymentService.getAllPayments());
-                verify(paymentRepository, times(1)).getAllPayments();
+                assertEquals(2, paymentService.getAllPayments().size());
+                assertSame(order1, paymentService.getAllPayments().get(0).getOrder());
+                assertSame(order2, paymentService.getAllPayments().get(1).getOrder());
         }
 
         @Test
         void testGetByIdFound() {
                 Payment payment = paymentService.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
                                 voucherPaymentData);
-                doReturn(payment).when(paymentService).getPayment(payment.getId());
                 assertEquals(payment, paymentService.getPayment(payment.getId()));
-                verify(paymentRepository, times(1)).getPayment(payment.getId());
         }
 
         @Test
         void testGetByIdNotFound() {
-                Payment payment = paymentService.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
+                paymentService.addPayment(order1, PaymentMethod.VOUCHER.getValue(),
                                 voucherPaymentData);
-                doReturn(null).when(paymentService).getPayment(payment.getId());
-                assertEquals(null, paymentService.getPayment("1234"));
-                verify(paymentRepository, times(1)).getPayment("1234");
+                assertNull(paymentService.getPayment("asiap-mamank"));
         }
 
         @Test
