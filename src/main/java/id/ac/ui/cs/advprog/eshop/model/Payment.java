@@ -17,9 +17,7 @@ public class Payment {
     public Payment(String id, String method, Map<String, String> paymentData, Order order)
             throws IllegalArgumentException {
         this.id = id;
-        this.paymentData = paymentData;
         this.setMethod(method);
-        this.setStatus(PaymentStatus.SUCCESS.getValue());
         this.setPaymentData(paymentData);
         if (order == null) {
             throw new IllegalArgumentException();
@@ -44,36 +42,35 @@ public class Payment {
         }
     }
 
-    public void setPaymentData(Map<String, String> paymentData) throws IllegalArgumentException {
+    public void setPaymentData(Map<String, String> paymentData) {
         if (paymentData == null) {
             throw new IllegalArgumentException();
-        } else if (this.method.equals(PaymentMethod.VOUCHER.getValue())) {
-            if (paymentData.get("voucherCode") == null) {
-                throw new IllegalArgumentException();
-            } else if (paymentData.get("voucherCode").length() != 16) {
-                throw new IllegalArgumentException();
-            } else if (!paymentData.get("voucherCode").startsWith("ESHOP")) {
-                throw new IllegalArgumentException();
-            } else {
-                int digitCount = 0;
-                for (int i = 0; i < paymentData.get("voucherCode").length(); i++) {
-                    if (Character.isDigit(paymentData.get("voucherCode").charAt(i))) {
-                        digitCount++;
-                    }
+        }
+        this.paymentData = paymentData;
+        if (this.method.equals(PaymentMethod.VOUCHER.getValue())) {
+            if (paymentData.get("voucherCode") == null ||
+                    paymentData.get("voucherCode").length() != 16 ||
+                    !paymentData.get("voucherCode").startsWith("ESHOP")) {
+                this.setStatus(PaymentStatus.REJECTED.getValue());
+                return;
+            }
+            int digitCount = 0;
+            for (int i = 0; i < paymentData.get("voucherCode").length(); i++) {
+                if (Character.isDigit(paymentData.get("voucherCode").charAt(i))) {
+                    digitCount++;
                 }
-                if (digitCount != 8) {
-                    throw new IllegalArgumentException();
-                }
-                this.paymentData = paymentData;
+            }
+            if (digitCount != 8) {
+                this.setStatus(PaymentStatus.REJECTED.getValue());
+                return;
             }
         } else if (this.method.equals(PaymentMethod.COD.getValue())) {
-            if (paymentData.get("address") == null || paymentData.get("deliveryFee") == null) {
-                throw new IllegalArgumentException();
-            } else if (paymentData.get("address").isEmpty() || paymentData.get("deliveryFee").isEmpty()) {
-                throw new IllegalArgumentException();
-            } else {
-                this.paymentData = paymentData;
+            if (paymentData.get("address") == null || paymentData.get("deliveryFee") == null ||
+                    paymentData.get("address").isEmpty() || paymentData.get("deliveryFee").isEmpty()) {
+                this.setStatus(PaymentStatus.REJECTED.getValue());
+                return;
             }
         }
+        this.setStatus(PaymentStatus.SUCCESS.getValue());
     }
 }
