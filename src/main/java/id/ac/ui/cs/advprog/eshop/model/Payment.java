@@ -14,8 +14,7 @@ public class Payment {
     private Map<String, String> paymentData;
     private Order order;
 
-    public Payment(String id, String method, Map<String, String> paymentData, Order order)
-            throws IllegalArgumentException {
+    public Payment(String id, String method, Map<String, String> paymentData, Order order) {
         this.id = id;
         this.setMethod(method);
         this.setPaymentData(paymentData);

@@ -11,13 +11,19 @@ import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 
 public class PaymentRepository {
-    private List<Payment> paymentData = new ArrayList<>();
+    private List<Payment> paymentData;
+
+    public PaymentRepository() {
+        this.paymentData = new ArrayList<>();
+    }
 
     public Payment addPayment(
-            Order order, String method, Map<String, String> paymentData) throws IllegalArgumentException {
+            Order order, String method, Map<String, String> data) {
         String uuid = UUID.randomUUID().toString();
-        Payment payment = new Payment(uuid, method, paymentData, order);
-        this.paymentData.add(payment);
+        System.out.println(uuid);
+        Payment payment = new Payment(uuid, method, data, order);
+        System.out.println(payment);
+        paymentData.add(payment);
         return payment;
     }
 
